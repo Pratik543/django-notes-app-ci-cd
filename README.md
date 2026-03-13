@@ -28,11 +28,47 @@ A simple todo app built with Django, containerized with Docker, and deployed on 
    - `22` (SSH)
    - `80` (HTTP)
    - `8080` (Jenkins)
+   - `8000` (App for Docker Compose)
    - `30007` (NodePort for Django App)
 
 3. **Install Dependencies:**
 Connect to your EC2 instance and install Java, Jenkins, Docker, Minikube, and `kubectl`.
 *(Make sure to add the `ubuntu` and `jenkins` users to the `docker` group).*
+
+```bash
+# Install Java
+sudo apt update
+sudo apt install openjdk-11-jdk -y
+
+# Install Jenkins
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+sudo echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get install jenkins -y
+
+# Install Docker
+sudo apt-get install docker.io -y
+sudo usermod -aG docker ubuntu
+sudo usermod -aG docker jenkins
+
+# Install Minikube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# Install kubectl
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
+  https://packages.cloud.google.com/apt/doc/apt-key.gpg
+sudo echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] \
+  https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee \
+  /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+```
 
 ---
 
@@ -44,8 +80,8 @@ Connect to your EC2 instance and install Java, Jenkins, Docker, Minikube, and `k
 5. **Pipeline Stages:** The pipeline generally executes the following typical stages:
    - Checkout code
    - Build Docker Image (`docker build -t <your-dockerhub-username>/django-todo:latest .`)
+   - Run Docker Compose (`docker compose up -d`)
    - Push to Docker Hub
-   - Deploy to Kubernetes by running `kubectl apply -f k8s/`
 
 ---
 
