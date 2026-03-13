@@ -38,7 +38,7 @@ Connect to your EC2 instance and install Java, Jenkins, Docker, Minikube, and `k
 ```bash
 # Install Java
 sudo apt update
-sudo apt install openjdk-11-jdk -y
+sudo apt install openjdk-21-jdk -y
 
 # Install Jenkins
 sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
